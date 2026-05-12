@@ -1,0 +1,78 @@
+{
+  "name": "delete-merged-branch",
+  "version": "0.0.0-development",
+  "description": "A GitHub app built that automatically deletes a branch after it's merged. That's it, enjoy!",
+  "author": "Sebass van Boxel <svboxel@gmail.com>",
+  "license": "ISC",
+  "repository": "https://github.com/SvanBoxel/delete-merged-branch.git",
+  "homepage": "https://github.com/SvanBoxel/delete-merged-branch",
+  "bugs": "https://github.com/SvanBoxel/delete-merged-branchissues",
+  "main": "handler.js",
+  "keywords": [
+    "probot",
+    "github",
+    "probot-app",
+    "delete-branch",
+    "git-tools",
+    "github-app"
+  ],
+  "scripts": {
+    "dev": "nodemon --exec \"npm start\"",
+    "gcp-dev": "functions-framework --target=probot",
+    "start": "probot run ./index.js",
+    "lint": "standard --fix",
+    "test": "jest && standard",
+    "test:watch": "jest --watch",
+    "test:ci": "jest && codecov",
+    "semantic-release": "semantic-release"
+  },
+  "dependencies": {
+    "@google-cloud/secret-manager": "^3.1.0",
+    "@probot/serverless-gcf": "^0.2.0",
+    "npm-check-updates": "^7.0.3",
+    "probot": "9.13.0",
+    "probot-actions-adapter": "1.0.5"
+  },
+  "devDependencies": {
+    "@semantic-release/npm": "7.0.5",
+    "codecov": "3.7.2",
+    "jest": "26.4.2",
+    "nodemon": "2.0.4",
+    "semantic-release": "17.2.3",
+    "serverless": "1.78.1",
+    "serverless-google-cloudfunctions": "^3.1.0",
+    "smee-client": "1.1.0",
+    "standard": "14.3.4"
+  },
+  "engines": {
+    "node": ">= 10.13.0"
+  },
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/npm"
+    ],
+    "verifyConditions": [
+      "@semantic-release/github"
+    ],
+    "publish": [
+      "@semantic-release/github",
+      "@semantic-release/npm"
+    ]
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "tag": "latest"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ],
+    "ignore": [
+      "/dist"
+    ]
+  }
+}

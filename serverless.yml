@@ -1,0 +1,26 @@
+service: node-simple-http-endpoint # NOTE: Don't put the word "google" in here
+
+provider:
+  name: google
+  runtime: 'nodejs10'
+  project: delete-merged-branch # google account project name
+  credentials: ~/.gcloud/keyfile.json # path must be absolute
+  environment:
+    PROJECT_ID: ${env:PROJECT_ID}
+    WEBHOOK_SECRET: ${env:WEBHOOK_SECRET}
+    PRIVATE_KEY_PATH: ${env:PRIVATE_KEY_PATH}
+    APP_ID: ${env:APP_ID}
+
+plugins:
+  - serverless-google-cloudfunctions
+package:
+  exclude:
+    - node_modules/**
+    - .gitignore
+    - .git/**
+
+functions:
+  delete-merged-branch:
+    handler: probot
+    events:
+      - http: path
