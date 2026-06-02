@@ -14,9 +14,9 @@ jobs:
       - id: action
         uses: .
         with:
-          exclude: "main develop release/*"
+          exclude: "main,develop,release/*"
         continue-on-error: true
-      - name: Assert action ran without unexpected failure
+      - name: Assert action ran with exclude input
         run: |
           echo "Action completed (may fail due to missing GitHub token in test env, which is expected)"
           echo "PASS: exclude input was accepted"

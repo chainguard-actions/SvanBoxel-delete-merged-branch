@@ -16,7 +16,7 @@ jobs:
         with:
           delete_closed_pr: "true"
         continue-on-error: true
-      - name: Assert action ran without unexpected failure
+      - name: Assert action ran with delete_closed_pr input
         run: |
           echo "Action completed (may fail due to missing GitHub token in test env, which is expected)"
           echo "PASS: delete_closed_pr input was accepted"
