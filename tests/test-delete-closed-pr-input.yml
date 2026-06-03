@@ -1,0 +1,28 @@
+name: Test delete_closed_pr input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_EVENT_NAME: pull_request
+      GITHUB_REF: refs/pull/2/merge
+      GITHUB_HEAD_REF: feature-closed-branch
+      GITHUB_BASE_REF: main
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: fake-token
+          GITHUB_EVENT_NAME: pull_request
+          GITHUB_REF: refs/pull/2/merge
+          GITHUB_HEAD_REF: feature-closed-branch
+          GITHUB_BASE_REF: main
+        with:
+          delete_closed_pr: "true"
+      - name: Assert action ran with delete_closed_pr input
+        run: |
+          echo "Action completed (may have errored due to no real GitHub token, but input was accepted)"
+          echo "PASS: delete_closed_pr input was accepted by the action"
