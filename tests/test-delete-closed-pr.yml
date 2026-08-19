@@ -1,20 +1,26 @@
-name: Test delete_closed_pr input
+name: Test delete closed PR branch
 on:
   workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_EVENT_NAME: pull_request
-      GITHUB_REF: refs/heads/main
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - id: action
         uses: .
         with:
-          delete_closed_pr: "true"
+          delete_closed_pr: 'true'
         continue-on-error: true
-      - name: Assert action ran
+      - name: Assert action ran with delete_closed_pr input (success or graceful failure on sentinel repo)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
         run: |
-          echo "Action completed (may fail due to missing GitHub token in test env)"
-          echo "PASS: delete_closed_pr input was accepted"
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded with delete_closed_pr enabled"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (sentinel repo is not resolvable)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi

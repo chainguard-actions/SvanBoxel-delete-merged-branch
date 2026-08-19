@@ -1,0 +1,97 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Test bot e2e
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on:
+  workflow_dispatch:
+  
+env:
+  owner: 'SvanBoxel'
+  repo: 'delete-test'
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+permissions:
+  contents: read
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  test-e2e-flow:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: Checkout
+      uses: actions/checkout@2036a08e25fa78bbd946711a407b529a0a1204bf # v2.3.2
+      with:
+        # Repository name with owner. For example, actions/checkout
+        repository: ${{ env.owner }}/${{ env.repo }}
+        token: ${{ secrets.DELETE_TEST_REPO_PAT }}
+        ref: 'master'
+    - name: Create commit
+      env:
+        GIT_SHA: ${{ github.sha }}
+      run: |
+        SHA="$GIT_SHA"
+        SHORT_SHA=${SHA: -7}
+        git config --global user.email "actions-bot@example.com"
+        git config --global user.name "Actions bot delete merged branch"
+        git checkout -b "$SHORT_SHA"
+        echo "$GIT_SHA" >> README.md
+        git add .
+        git commit -m "Testing delete-merged-branch bot sha $GIT_SHA"
+        git push -u origin "$SHORT_SHA"
+        safe_short_sha=$(printf '%s' "$SHORT_SHA" | tr -d '\n\r')
+        echo "short_sha=$safe_short_sha" >> "$GITHUB_ENV"
+    - name: Create pull request
+      uses: actions/github-script@ffc2c79a5b2490bd33e0a41c1de74b877714d736 # v3
+      with: 
+        github-token: ${{ secrets.DELETE_TEST_REPO_PAT }}
+        script: |
+          const short_sha = process.env.short_sha;
+         
+          const pr = await github.pulls.create({
+            owner: process.env.owner,
+            repo: process.env.repo,
+            title: `test pull request for ${short_sha}`,
+            head: short_sha,
+            base: 'master'
+          });
+          
+          core.exportVariable('pull_number', pr.data.number);
+    - name: Merge pull request
+      uses: actions/github-script@ffc2c79a5b2490bd33e0a41c1de74b877714d736 # v3
+      with: 
+        github-token: ${{ secrets.DELETE_TEST_REPO_PAT }}
+        script: |
+          const short_sha = process.env.short_sha;
+         
+          github.pulls.merge({
+            owner: process.env.owner,
+            repo: process.env.repo,
+            pull_number: process.env.pull_number
+          });
+    - name: Sleep for 10 seconds
+      run: sleep 10s
+    - name: Check if branch is deleted
+      uses: actions/github-script@ffc2c79a5b2490bd33e0a41c1de74b877714d736 # v3
+      with: 
+        github-token: ${{ secrets.DELETE_TEST_REPO_PAT }}
+        script: |
+          const short_sha = process.env.short_sha;
+
+          const events = await github.issues.listEvents({
+            owner: process.env.owner,
+            repo: process.env.repo,
+            issue_number: process.env.pull_number
+          });
+          
+          const closed = events.data.some(events => events.event === 'head_ref_deleted')
+          
+          if (!closed) {
+            core.setFailed(`Action failed because branch delete event is not found`);
+          }
