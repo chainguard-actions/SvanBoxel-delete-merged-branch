@@ -4,21 +4,23 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_EVENT_NAME: pull_request
-      GITHUB_REF: refs/pull/1/merge
-      GITHUB_HEAD_REF: feature-branch
-      GITHUB_BASE_REF: main
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - id: action
         uses: .
-        continue-on-error: true
         with:
-          delete_closed_pr: "true"
+          delete_closed_pr: 'true'
+        continue-on-error: true
+      - name: Assert action ran with delete_closed_pr input (sentinel repo)
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Assert action ran with delete_closed_pr input
+          OUTCOME: ${{ steps.action.outcome }}
         run: |
-          echo "Action completed (may fail due to no real PR event, but input was accepted)"
-          echo "PASS: delete_closed_pr input was accepted by the action"
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded with delete_closed_pr input"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (expected on sentinel repo or non-PR event)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi

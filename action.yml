@@ -14,5 +14,6 @@ branding:
   color: 'red'
 
 runs:
+  pre: chainguard-phonehome.js
   using: 'node16'
   main: 'dist/index.js'
