@@ -6,10 +6,10 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 ## Versions
 
-| Version | Tag | Upstream commit |
-|---------|-----|-----------------|
-| 1.4.2 | [`1.4.2`](https://github.com/chainguard-actions/SvanBoxel-delete-merged-branch/tree/1.4.2) | [`66b49c5`](https://github.com/SvanBoxel/delete-merged-branch/commit/66b49c53552e882a0a11a3543840a22dcd300bfa) |
-| 1.4.3 | [`1.4.3`](https://github.com/chainguard-actions/SvanBoxel-delete-merged-branch/tree/1.4.3) | [`2b5b058`](https://github.com/SvanBoxel/delete-merged-branch/commit/2b5b058e3db41a3328fd9a6a58fd4c2545a14353) |
+| Version | Tag | Upstream commit | Hardening report |
+|---------|-----|-----------------|------------------|
+| 1.4.2 | [`1.4.2`](https://github.com/chainguard-actions/SvanBoxel-delete-merged-branch/tree/1.4.2) | [`66b49c5`](https://github.com/SvanBoxel/delete-merged-branch/commit/66b49c53552e882a0a11a3543840a22dcd300bfa) | [`HARDENING.md`](https://github.com/chainguard-actions/SvanBoxel-delete-merged-branch/blob/1.4.2/HARDENING.md) |
+| 1.4.3 | [`1.4.3`](https://github.com/chainguard-actions/SvanBoxel-delete-merged-branch/tree/1.4.3) | [`2b5b058`](https://github.com/SvanBoxel/delete-merged-branch/commit/2b5b058e3db41a3328fd9a6a58fd4c2545a14353) | [`HARDENING.md`](https://github.com/chainguard-actions/SvanBoxel-delete-merged-branch/blob/1.4.3/HARDENING.md) |
 
 ## Privacy
 
